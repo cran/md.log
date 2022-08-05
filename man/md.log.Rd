@@ -6,7 +6,7 @@
 \usage{
 md.log(msg, file = "", append = FALSE, sys.info = TRUE,
 section="monospace", level="", trace=TRUE, date=FALSE,
-time=FALSE,datetime.fmt="\%Y-\%m-\%d \%H:\%M:\%S")
+time=FALSE, print=FALSE, datetime.fmt="\%Y-\%m-\%d \%H:\%M:\%S")
 }
 \arguments{
 \item{msg}{the text that is to be printed in the log file. By default
@@ -43,6 +43,9 @@ before each \code{msg}}
 
 \item{time}{logical. if \code{TRUE}, the current time is included
 before each \code{msg}}
+
+\item{print}{logical. if \code{TRUE}, the massage is
+printed in R console as well.}
 
 \item{datetime.fmt}{specifies the format of date and time arguments
 and by default is \code{"\%Y-\%m-\%d \%H:\%M:\%S"}. whitespace should

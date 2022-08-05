@@ -1,7 +1,7 @@
 #' @title md.log
 #' @usage md.log(msg, file = "", append = FALSE, sys.info = TRUE,
 #' section="monospace", level="", trace=TRUE, date=FALSE,
-#' time=FALSE,datetime.fmt="\%Y-\%m-\%d \%H:\%M:\%S")
+#' time=FALSE, print=FALSE, datetime.fmt="\%Y-\%m-\%d \%H:\%M:\%S")
 #'
 #' @description produces Markdown log files with an optional argument
 #' to include the function call inside the Markdown log file.
@@ -44,6 +44,9 @@
 #' @param datetime.fmt specifies the format of date and time arguments
 #' and by default is \code{"\%Y-\%m-\%d \%H:\%M:\%S"}. whitespace should
 #' only be used to separate the date and time formats
+#'
+#' @param print logical. if \code{TRUE}, the massage is
+#'              printed in R console as well.
 #'
 #' @examples
    # \dontrun{
@@ -122,6 +125,7 @@ md.log = function(msg,
                    trace=TRUE,
                    date=FALSE,
                    time=FALSE,
+                   print=FALSE,
                    datetime.fmt="%Y-%m-%d %H:%M:%S") {
 
   # Prepare the package and get the trace path
@@ -152,23 +156,34 @@ md.log = function(msg,
   else if (section != "monospace") {
     n = nchar(msg)
     flog.layout(layout.format('~m'))                                  # Only log the message
+    line = ""
     if (section == "section") {
       flog.info("\n")
       flog.info(msg)
-      flog.info(paste(paste(replicate(n, "="), collapse = ""),"\n", collapse = ""))
+      line = paste(paste(replicate(n, "="), collapse = ""),"\n", collapse = "")
+      flog.info(line)
     } else if (section == "subsection") {
       flog.info("\n")
       flog.info(msg)
-      flog.info(paste(paste(replicate(n, "-"), collapse = ""),"\n", collapse = ""))
+      line = paste(paste(replicate(n, "-"), collapse = ""),"\n", collapse = "")
+      flog.info(line)
     } else if (section == "paragraph") {
       flog.info(msg)
-      flog.info("")
+      line = ""
+      flog.info(line)
     }
-  }
+
+    if (print) {
+      cat(paste0(msg, "\n"))
+      cat(line)
+    }
+
 
   # Write monospace text
   # ------------------------------------------------------------------
-  else {
+  } else {
+    if (print) print(msg)             # print in the console
+
     datetime = unlist(strsplit(datetime.fmt, " "))
     date.fmt = datetime[1]
     time.fmt = datetime[2]
@@ -198,8 +213,7 @@ md.log = function(msg,
     if (!is.null(date) | !is.null(time)) {
       dateTime = trimws(paste(date, time))
       dtsymbol = " [~t]"
-    }
-    else {
+    } else {
       dateTime = ""
       dtsymbol = ""
     }
@@ -208,12 +222,12 @@ md.log = function(msg,
       fsymbol = ""
       p = paste(paste(list, collapse=" > "),":", sep = "")
       msg = paste(p, msg)
-    }
-    else {
+    } else {
       fsymbol = " ~f:"
     }
 
     format = paste("    ", level, dtsymbol, fsymbol, " ~m", sep = "")
+
     flog.layout(layout.format(format, datetime.fmt=dateTime))
     flog.info('%s' , msg )
   }

@@ -17,7 +17,9 @@ sys.info <- function() {
   else { ## mystery machine
     os <- .Platform$OS.type
     if (grepl("^darwin", R.version$os))
-      os <- "Mac OS X"
+      str = unlist(strsplit(sessionInfo()$running, split = " "))
+      os = paste("Mac OSX", str[2])
+      release = str[3]
     if (grepl("linux-gnu", R.version$os))
       os <- "Linux"
   }
